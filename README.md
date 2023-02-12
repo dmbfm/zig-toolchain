@@ -2,6 +2,8 @@
 
 This is a small utility I wrote in Go to download and quickly switch versions of the [zig](http://ziglang.org) compiler.
 
+Currently creates a symbolic link to the zig binary located at `~/.local/bin/zig`.
+
 ## Installation
 
 ```

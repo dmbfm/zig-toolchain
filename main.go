@@ -508,6 +508,7 @@ const (
 	CommandList
 	CommandShow
 	CommandActivate
+    CommandDeactivate
 	CommandNone
 )
 
@@ -518,6 +519,7 @@ func printUsageAndExit() {
 	fmt.Printf("\n    list\t\t List remote versions.")
 	fmt.Printf("\n    show\t\t List local versions.")
 	fmt.Printf("\n    activate\t\t Activeate a given zig version.")
+	fmt.Printf("\n    deactivate\t\t Deactivate the current active version. Removes the symlink to the zig binary.")
 	fmt.Printf("\n\n")
 	os.Exit(0)
 }
@@ -539,6 +541,8 @@ func (app *AppState) run() {
 		command = CommandShow
 	case "activate":
 		command = CommandActivate
+    case "deactivate":
+        command = CommandDeactivate
 	default:
 		printUsageAndExit()
 	}
@@ -704,13 +708,15 @@ func (app *AppState) run() {
 			}
 			app.commandActivateVersion(*v)
 		}
+
+    case CommandDeactivate:
+        err := os.Remove(zigBinPath())
+        if err != nil {
+            panic(err)
+        }
+        os.RemoveAll(localDirPath("current"))
+        ensureDirectories()
 	}
-
-	// app.commandDownloadVersion(0, 9, 0)
-	// app.commandDownloadMaster()
-	// app.commandListRemote()
-	// app.commandListLocal()
-
 }
 
 func main() {
